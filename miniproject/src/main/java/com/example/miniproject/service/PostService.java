@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,36 +101,57 @@ public class PostService {
         Post post = postRepository.findById(postid).orElseThrow(
                 () -> new ApiException(ExceptionEnum.NOT_FOUND_POST)
         );
+
         if (user.getRole() != UserRoleEnum.ADMIN && !StringUtils.equals(post.getUser().getId(), user.getId())) {
             throw new ApiException(ExceptionEnum.UNAUTHORIZED);
         }
 
-        // 폴더 생성과 파일명 새로 부여를 위한 현재 시간 알아내기
-        LocalDateTime now = LocalDateTime.now();
-        int hour = now.getHour();
-        int minute = now.getMinute();
-        int second = now.getSecond();
-        int millis = now.get(ChronoField.MILLI_OF_SECOND);
+        // image 가 있는데 title or contents 없는 경우
+        List<PostRequestDto> list = new ArrayList<>();
+        list.add(postRequestDto);
 
-        String imageUrl;
+        if (image == null) {        // image 가 없는 경우
+            for (PostRequestDto requestDto : list) {
+                if (requestDto.getTitle() != null) post.setTitle(requestDto.getTitle()); // image && title 있는 경우
+                if (requestDto.getContents() != null) post.setContents(requestDto.getContents()); // image && contents 있는 경우
+            }
+        }
 
-        // 새로 부여한 이미지명
-        String newFileName = "image" + hour + minute + second + millis;
-        String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
-        String imageName =S3_BUCKET_PREFIX + newFileName + fileExtension;
+        if (image != null) {
+            // 폴더 생성과 파일명 새로 부여를 위한 현재 시간 알아내기
+            LocalDateTime now = LocalDateTime.now();
+            int hour = now.getHour();
+            int minute = now.getMinute();
+            int second = now.getSecond();
+            int millis = now.get(ChronoField.MILLI_OF_SECOND);
 
-        // 메타데이터 설정
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(image.getContentType());
-        objectMetadata.setContentLength(image.getSize());
+            String imageUrl;
 
-        InputStream inputStream = image.getInputStream();
+            // 새로 부여한 이미지명
+            String newFileName = "image" + hour + minute + second + millis;
+            String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
+            String imageName =S3_BUCKET_PREFIX + newFileName + fileExtension;
 
-        amazonS3.putObject(new PutObjectRequest(bucketName, imageName, inputStream, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-        imageUrl = amazonS3.getUrl(bucketName, imageName).toString();
+            // 메타데이터 설정
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(image.getContentType());
+            objectMetadata.setContentLength(image.getSize());
 
-        post.updatePost(postRequestDto, imageUrl);
+            InputStream inputStream = image.getInputStream();
+
+            amazonS3.putObject(new PutObjectRequest(bucketName, imageName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            imageUrl = amazonS3.getUrl(bucketName, imageName).toString();
+
+            if (postRequestDto.getTitle() == null) {
+                postRequestDto.setTitle(post.getTitle());
+            }
+            if (postRequestDto.getContents() == null) {
+                postRequestDto.setContents(post.getContents());
+            }
+            post.updatePost(postRequestDto, imageUrl);
+        }
+
         return new PostResponseDto(post);
     }
 

@@ -41,7 +41,7 @@ public class PostController {
     }
 
     // 게시물 수정
-    @PutMapping("/api/posts/{postId}")
+    @PatchMapping("/api/posts/{postId}")
     public PostResponseDto updatePost(@PathVariable Long postId,
                                       PostRequestDto postrequestDto,
                                       @RequestParam(value ="image", required=false) MultipartFile image,
