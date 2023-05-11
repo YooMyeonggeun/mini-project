@@ -1,8 +1,6 @@
 package com.example.miniproject.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
+// 추가적인 설정 파일
 public class SwaggerConfig {
 
 

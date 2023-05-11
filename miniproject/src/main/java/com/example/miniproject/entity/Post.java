@@ -52,10 +52,4 @@ public class Post extends Timestamped {
         this.contents = postRequestDto.getContents();
         this.imageUrl = imageUrl;
     }
-
-//    public void addComment(Comment comment) {
-//        commentList.add(comment);
-//        comment.setPost(this);
-//    }
-
 }

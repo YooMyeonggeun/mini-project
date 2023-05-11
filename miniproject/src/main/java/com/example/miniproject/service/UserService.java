@@ -11,7 +11,6 @@ import com.example.miniproject.exception.ApiException;
 import com.example.miniproject.exception.ExceptionEnum;
 import com.example.miniproject.jwt.JwtUtil;
 import com.example.miniproject.redis.RedisUtil;
-import com.example.miniproject.repository.BlackListRepository;
 import com.example.miniproject.repository.RefreshTokenRepository;
 import com.example.miniproject.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
