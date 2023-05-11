@@ -6,6 +6,7 @@ import com.example.miniproject.security.UserDetailsImpl;
 import com.example.miniproject.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UserController {
 
     //회원가입
     @PostMapping("/api/signup")
-    public UserResponseDto signup(@RequestBody UserRequestDto requestDto) {
+    public UserResponseDto signup(@RequestBody @Valid UserRequestDto requestDto) {
         return userService.singup(requestDto);
     }
 
