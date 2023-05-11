@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-//변경 by ym
-@CrossOrigin(origins="*", exposedHeaders = "ACCESS_KEY")
+@CrossOrigin(origins = "*", exposedHeaders = "ACCESS_KEY")
 @RestController
 @RequiredArgsConstructor
 public class UserController {

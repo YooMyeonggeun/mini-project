@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponseDto {
     private String meassage;
-    public UserResponseDto(String meassage){
+
+    public UserResponseDto(String meassage) {
         this.meassage = meassage;
     }
 }

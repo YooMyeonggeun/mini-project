@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String access_token = jwtUtil.resolveToken(request, jwtUtil.ACCESS_KEY);
         String refresh_token = jwtUtil.resolveToken(request, jwtUtil.REFRESH_KEY);
         // 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리
-        if(access_token == null){
+        if (access_token == null) {
             filterChain.doFilter(request, response);
         } else {
             if (jwtUtil.validateToken(access_token)) {
@@ -62,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     // 인증 객체를 생성하여 SecurityContext에 설정
-    public void setAuthentication (String username){
+    public void setAuthentication(String username) {
         Authentication authentication = jwtUtil.createAuthentication(username);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

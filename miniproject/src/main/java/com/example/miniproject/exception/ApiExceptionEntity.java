@@ -12,7 +12,7 @@ public class ApiExceptionEntity {
     private String errorMessage;
 
     @Builder
-    public ApiExceptionEntity(HttpStatus status, String errorCode, String errorMessage){
+    public ApiExceptionEntity(HttpStatus status, String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

@@ -22,7 +22,7 @@ public class RefreshToken {
     @NotBlank
     private String userid;
 
-    public RefreshToken(String tokenDto,  String userid) {
+    public RefreshToken(String tokenDto, String userid) {
         this.refreshToken = tokenDto;
         this.userid = userid;
     }
