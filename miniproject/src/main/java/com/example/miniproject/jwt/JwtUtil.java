@@ -48,7 +48,7 @@ public class JwtUtil {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RedisUtil redisUtil;
 
-    public TokenDto creatAllToken(String username, UserRoleEnum userRole){
+    public TokenDto creatAllToken(String username, UserRoleEnum userRole) {
         return new TokenDto(createToken(username, userRole, "Access"), createToken(username, userRole, "Refresh"));
     }
 
@@ -85,7 +85,7 @@ public class JwtUtil {
 
     // 토큰 검증
     public boolean validateToken(String token) {
-        if(redisUtil.hasKeyBlackList(token))
+        if (redisUtil.hasKeyBlackList(token))
             return false;
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -119,6 +119,7 @@ public class JwtUtil {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserid(getUserInfoFromToken(token));
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }
+
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
         response.setHeader(ACCESS_KEY, accessToken);
     }

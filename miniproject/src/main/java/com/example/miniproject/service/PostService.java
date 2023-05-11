@@ -44,7 +44,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     // 게시글 전체 조회
-    public List<PostResponseDto> getPosts(){
+    public List<PostResponseDto> getPosts() {
         List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc();
         return postList.stream().map(PostResponseDto::new).collect(Collectors.toList());
     }
@@ -65,7 +65,7 @@ public class PostService {
         // 새로 부여한 이미지명
         String newFileName = "image" + hour + minute + second + millis;
         String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
-        String imageName =S3_BUCKET_PREFIX + newFileName + fileExtension;
+        String imageName = S3_BUCKET_PREFIX + newFileName + fileExtension;
 
         // 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -113,7 +113,8 @@ public class PostService {
         if (image == null) {        // image 가 없는 경우
             for (PostRequestDto requestDto : list) {
                 if (requestDto.getTitle() != null) post.setTitle(requestDto.getTitle()); // image && title 있는 경우
-                if (requestDto.getContents() != null) post.setContents(requestDto.getContents()); // image && contents 있는 경우
+                if (requestDto.getContents() != null)
+                    post.setContents(requestDto.getContents()); // image && contents 있는 경우
             }
         }
 
@@ -130,7 +131,7 @@ public class PostService {
             // 새로 부여한 이미지명
             String newFileName = "image" + hour + minute + second + millis;
             String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
-            String imageName =S3_BUCKET_PREFIX + newFileName + fileExtension;
+            String imageName = S3_BUCKET_PREFIX + newFileName + fileExtension;
 
             // 메타데이터 설정
             ObjectMetadata objectMetadata = new ObjectMetadata();

@@ -37,10 +37,10 @@ public class UserService {
 
 
     // 회원가입
-    public UserResponseDto singup(UserRequestDto userRequestDto){
+    public UserResponseDto singup(UserRequestDto userRequestDto) {
 
         String userid = userRequestDto.getUserid();
-        if(!userRequestDto.getPassword().matches("^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\\\(\\\\)\\-_=+]).{8,15}$")){ // 비밀번호 정규식 체크
+        if (!userRequestDto.getPassword().matches("^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\\\(\\\\)\\-_=+]).{8,15}$")) { // 비밀번호 정규식 체크
             sentrySupport.logSimpleMessage((ExceptionEnum.PASSWAORD_REGEX).getMessage());
             throw new ApiException(ExceptionEnum.PASSWAORD_REGEX);
         }
@@ -48,14 +48,14 @@ public class UserService {
         String password = passwordEncoder.encode(userRequestDto.getPassword());
 
         // 중복된 아이디값 체크
-        if(userRepository.findByUserid(userRequestDto.getUserid()).isPresent()){
+        if (userRepository.findByUserid(userRequestDto.getUserid()).isPresent()) {
             sentrySupport.logSimpleMessage((ExceptionEnum.DUPLICATED_USER_NAME).getMessage());
             throw new ApiException(ExceptionEnum.DUPLICATED_USER_NAME);
         }
 
         //관리자 권한 체크
         UserRoleEnum role = UserRoleEnum.USER;
-        if(userRequestDto.isAdmin()){
+        if (userRequestDto.isAdmin()) {
             role = UserRoleEnum.ADMIN;
         }
 
@@ -65,19 +65,19 @@ public class UserService {
 
 
     // 로그인
-    public UserResponseDto login(UserRequestDto userRequestDto, HttpServletResponse response){
+    public UserResponseDto login(UserRequestDto userRequestDto, HttpServletResponse response) {
         String userId = userRequestDto.getUserid();
-        String password =  userRequestDto.getPassword();
+        String password = userRequestDto.getPassword();
 
         // 사용자 확인
         Optional<User> user = userRepository.findByUserid(userId);
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             sentrySupport.logSimpleMessage((ExceptionEnum.BAD_REQUEST).getMessage());
             throw new ApiException(ExceptionEnum.BAD_REQUEST);
         }
 
         // 비밀번호 확인
-        if(!passwordEncoder.matches(password, user.get().getPassword())){
+        if (!passwordEncoder.matches(password, user.get().getPassword())) {
 
             sentrySupport.logSimpleMessage((ExceptionEnum.BAD_REQUEST).getMessage());
             throw new ApiException(ExceptionEnum.BAD_REQUEST);
@@ -89,9 +89,9 @@ public class UserService {
         // Refresh 토큰 있는지 확인
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserid(userId);
 
-        if(refreshToken.isPresent()){
+        if (refreshToken.isPresent()) {
             refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-        }else{
+        } else {
             RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), userId);
             refreshTokenRepository.save(newToken);
         }
@@ -104,10 +104,10 @@ public class UserService {
     }
 
     //로그아웃
-    public UserResponseDto logout(User user, HttpServletRequest request){
+    public UserResponseDto logout(User user, HttpServletRequest request) {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserid(user.getUserid());
         String accessToken = request.getHeader("ACCESS_KEY").substring(7);
-        if(refreshToken.isPresent()){
+        if (refreshToken.isPresent()) {
             Long tokenTime = jwtUtil.getExpirationTime(accessToken);
             redisUtil.setBlackList(accessToken, "access_token", tokenTime);
             refreshTokenRepository.deleteByUserid(user.getUserid());

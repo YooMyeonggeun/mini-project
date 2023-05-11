@@ -14,7 +14,6 @@ public class CommentResponseDto {
     private String contents;
     private LocalDateTime lastmodifiedDate;
 
-
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.userid = comment.getUser().getUserid();

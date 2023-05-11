@@ -1,4 +1,5 @@
 package com.example.miniproject.service;
+
 import com.example.miniproject.dto.CommentResponseDto;
 import com.example.miniproject.entity.Post;
 import com.example.miniproject.entity.User;
@@ -19,6 +20,7 @@ import org.thymeleaf.util.StringUtils;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+
     //댓글 작성
     @Transactional
     public CommentResponseDto writeComment(Long postId, CommentRequestDto commentRequestDto, User user) {

@@ -74,7 +74,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/api/signup").permitAll()
                 .requestMatchers("/api/login").permitAll()
-                .requestMatchers( "/api/posts/**").permitAll()
+                .requestMatchers("/api/posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/read/**").permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -82,7 +82,7 @@ public class WebSecurityConfig {
                 // 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위한 설정
-                .and().addFilterBefore(new JwtAuthFilter(jwtUtil,userRepository), UsernamePasswordAuthenticationFilter.class)
+                .and().addFilterBefore(new JwtAuthFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .cors();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
